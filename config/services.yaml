@@ -1,4 +1,4 @@
-microservices:
+services:
   - name: SDX Transformer
     description: Transforms survey data
     repo_url: http://github.com/sdx-transformer
