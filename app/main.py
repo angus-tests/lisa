@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
-import requests
 from pydantic import BaseModel, HttpUrl
+
+from app.health_check import check_health
+from app.util import load_config
 
 app = FastAPI(title="Microservices Health Monitor")
 
@@ -11,23 +13,23 @@ class Service(BaseModel):
     health_check_url: HttpUrl
 
 
-# Mocked services dictionary
-services = {
-    "1": Service(name="SDX Transformer", health_check_url="http://example.com/health"),
-    "2": Service(name="SDX Survey", health_check_url="http://example2.com/health")
-}
+# Load the services yaml from file
+services = load_config("")
 
 
 @app.get("/health/{service_id}")
 async def get_service_health(service_id: str):
+    """
+    Fetch the health status of a service given the id of the service
+    """
     service = services.get(service_id)
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
-    try:
-        response = requests.get(service.health_check_url)
-        return {"service_name": service.name, "status": response.status_code}
-    except requests.RequestException as e:
-        return {"service_name": service.name, "status": "unreachable", "reason": str(e)}
+
+    # Extract the health_check_url field for this service and check it's status
+    result = check_health(service["health_check_url"])
+    return {"service_name": service["name"], "health_check_result": result}
+
 
 @app.get("/")
 async def root():
