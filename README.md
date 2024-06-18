@@ -7,9 +7,11 @@ Logging, information & system analysis
 /LISA
 |-- app/
     |-- __init__.py
+    |-- config_manager.py  # For loading config from file
+    |-- health_checker.py  # For performing health checks
     |-- main.py            # Entry point of the FastAPI application
     |-- util.py            # Various utility functions
-    |-- health_checker.py  # For performing health checks
+    
 ```
 
 ## Services.yaml
