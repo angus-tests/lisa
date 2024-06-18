@@ -29,6 +29,10 @@ class ConfigManager:
         self.services = self.load_config()
 
     def load_config(self) -> Dict[str, Service]:
+        """
+        Load services in a dict, [service_id -> Service]
+        :return:
+        """
         with open(self.config_path, 'r') as file:
             config_data = yaml.safe_load(file)
             return {service['id']: Service(**service) for service in config_data['services']}

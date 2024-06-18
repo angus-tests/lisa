@@ -13,6 +13,8 @@ status_to_image = {
     Status.UP: "up.svg",
     Status.DOWN: "down.svg",
     Status.DODGY: "maybe.svg",
+    Status.MAINTENANCE: "maintenance.svg",
+    Status.FAILED: "failed.svg",
     Status.UNKNOWN: "unknown.svg"
 }
 

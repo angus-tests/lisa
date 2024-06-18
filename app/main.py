@@ -1,38 +1,82 @@
-from fastapi import FastAPI
+import asyncio
+
+from fastapi import FastAPI, Depends
 
 from app.config_manager import ConfigManager, Service
-from app.health_check import check_health
+from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 app = FastAPI(title="LISA")
 config_manager = ConfigManager("config/services.yaml")
+scheduler = AsyncIOScheduler()
+status_manager = HealthStatusManager()
+
+
+def get_status_manager():
+    """
+    Tiny helper function used to retrieve an instance
+    of the health status manager. For use with FastAPI dependency injection
+    """
+    return status_manager
 
 
 @app.get("/health/{service_id}")
-async def get_service_health(service_id: str):
+def get_service_health(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
     """
-    Fetch the health status of a service given the id of the service
+    Fetch the health status of a service
+    :param service_id: The ID of the service
+    :param manager: An instance of a health status manager to fetch status' from
     """
-
-    service: Service = config_manager.get_service_by_id(service_id)
-
-    # Extract the health_check_url field for this service and check its status
-    status = check_health(service.health_check_url)
-    return {"service_name": service.id, "status": status}
+    return {"service_id": service_id, "status": manager.get_status(service_id).name}
 
 
 @app.get("/badge/{service_id}")
-async def get_service_badge(service_id: str):
+def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
     """
-    Get a badge for a service given the id of the service
+    Generate an SVG badge which indicates the status
+    of this service
     """
+    return load_image(manager.get_status(service_id))
 
-    service: Service = config_manager.get_service_by_id(service_id)
-    status = check_health(service.health_check_url)
-    return load_image(status)
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to LISA"}
+
+
+# -------------- Schedules -----------------
+@app.on_event("startup")
+async def start_scheduler():
+
+    # Initialize the status of all services on startup
+    status_manager.initialize_statuses(config_manager.services.values())
+
+    # Run the initial health checks asynchronously
+    await perform_periodic_health_checks()
+
+    # Start the schedule
+    scheduler.start()
+
+    # Every five minutes ping all the apps
+    scheduler.add_job(perform_periodic_health_checks, 'interval', minutes=5)
+
+
+@app.on_event("shutdown")
+def shutdown_scheduler():
+    scheduler.shutdown()
+
+
+async def perform_periodic_health_checks():
+    """
+    Periodically check all the services, instead of doing it ONLY when we get an API request.
+    """
+
+    # Check the health of all services asynchronously to avoid waiting for unresponsive apps
+    tasks = []
+    for service in config_manager.services.values():
+        task = asyncio.create_task(perform_health_check(service, status_manager))
+        tasks.append(task)
+    await asyncio.gather(*tasks)
 
 
