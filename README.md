@@ -33,11 +33,35 @@ microservices:
 
 The status of services can be returned as SVG badges, using the endpoint `"/badge/{service_id}"`
 
-| Status        | Description                        | Badge Image                                          |
-|---------------|------------------------------------|------------------------------------------------------|
-| UP            | The service is operating normally. | ![UP Badge](/images/up.svg)                          |
-| DOWN          | The service is not reachable.      | ![DOWN Badge](/images/down.svg)                      |
-| MAINTENANCE   | The service is under maintenance.  | ![Maintenance Badge](/images/maintenance.svg)        |
-| FAILED        | The service check failed.          | ![Failed Badge](/images/failed.svg) (If available)   |
-| UNKNOWN       | Status is not determined.          | ![Unknown Badge](/images/unknown.svg) (If available) |
-
+<table style="width:100%;">
+    <tr>
+        <th>Status</th>
+        <th>Description</th>
+        <th>Badge Image</th>
+    </tr>
+    <tr>
+        <td>UP</td>
+        <td>The service is operating normally.</td>
+        <td><img src="/images/up.svg" alt="UP Badge"></td>
+    </tr>
+    <tr>
+        <td>DOWN</td>
+        <td>The service is not reachable.</td>
+        <td><img src="/images/down.svg" alt="DOWN Badge"></td>
+    </tr>
+    <tr>
+        <td>MAINTENANCE</td>
+        <td>The service is under maintenance.</td>
+        <td><img src="/images/maintenance.svg" alt="Maintenance Badge"></td>
+    </tr>
+    <tr>
+        <td>FAILED</td>
+        <td>The service check failed.</td>
+        <td><img src="/images/failed.svg" alt="Failed Badge"></td>
+    </tr>
+    <tr>
+        <td>UNKNOWN</td>
+        <td>Status is not determined.</td>
+        <td><img src="/images/unknown.svg" alt="Unknown Badge"></td>
+    </tr>
+</table>
