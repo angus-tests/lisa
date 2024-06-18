@@ -70,3 +70,7 @@ The status of services can be returned as SVG badges, using the endpoint `"/badg
         <td><img src="/images/unknown.svg" alt="Unknown Badge"></td>
     </tr>
 </table>
+
+## OpenAPI spec
+
+In `spec/openapi.yaml` is a file which defines how the microservice endpoints should work. This is currently a work in progress and is not yet complete.

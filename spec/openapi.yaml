@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: Service Health Check API
+  description: API for checking the health of a microservice (WIP)
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Checks the health of the microservice
+      operationId: getHealth
+      tags:
+        - Health Check
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: Service Unavailable
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status of the microservice, typically 'healthy' or 'unhealthy'.
+        details:
+          type: string
+          description: Detailed status message or diagnostic information.
