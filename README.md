@@ -26,3 +26,16 @@ microservices:
     description: Handles user data and authentication  # Brief description of the service
     health_check_url: http://user-service/health  # URL to check the health of the service
 ```
+
+## Badges
+
+The status of services can be returned as SVG badges, using the endpoint `"/badge/{service_id}"`
+
+| Status        | Description                        | Badge Image                                          |
+|---------------|------------------------------------|------------------------------------------------------|
+| UP            | The service is operating normally. | ![UP Badge](/images/up.svg)                          |
+| DOWN          | The service is not reachable.      | ![DOWN Badge](/images/down.svg)                      |
+| MAINTENANCE   | The service is under maintenance.  | ![Maintenance Badge](/images/maintenance.svg)        |
+| FAILED        | The service check failed.          | ![Failed Badge](/images/failed.svg) (If available)   |
+| UNKNOWN       | Status is not determined.          | ![Unknown Badge](/images/unknown.svg) (If available) |
+
