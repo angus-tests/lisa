@@ -11,6 +11,8 @@ def check_health(url: str) -> dict:
     :param url: The health check URL
     :return: Status dictionary, must contain "status" key
     """
+
+    # TODO implement cache
     try:
         response = requests.get(url)
         return {'status': response.status_code, 'body': response.text}
