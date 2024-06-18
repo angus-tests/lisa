@@ -1,0 +1,13 @@
+services:
+  - name: SDX Transformer
+    id: sdx_transformer
+    description: Transforms survey data
+    repo_url: http://github.com/sdx-transformer
+    health_check_url: http://localhost:5001/health
+
+  - name: SDX Survey
+    id: sdx_survey
+    description: Another sdx microservice bruh
+    repo_url: http://github.com/sdx-survey
+    health_check_url: http://localhost:5002/health
+
