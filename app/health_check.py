@@ -2,13 +2,14 @@
 File used for checking health of services
 """
 import asyncio
-from asyncio import TimeoutError
+import logging
 from typing import Dict
 
 from fastapi import HTTPException
 from app.config_manager import Status, Service
 from aiohttp import ClientSession, ClientError, ClientTimeout
-from aiohttp import helpers
+
+logger = logging.getLogger(__name__)
 
 
 class HealthStatusManager:
@@ -50,7 +51,7 @@ async def perform_health_check(service: Service, manager: HealthStatusManager,
     :param timeout_threshold Any service taking longer than this will be considered DOWN, a service inbetween the
     threshold and the timeout will be considered DODGY
     """
-    print(f"Starting health check for service {service.id}")
+    logger.info(f"Starting health check for service {service.id}")
     async with ClientSession() as session:
         try:
             # Set a timeout for the HTTP request
@@ -62,7 +63,7 @@ async def perform_health_check(service: Service, manager: HealthStatusManager,
 
                 # Get the elapsed time
                 elapsed = asyncio.get_event_loop().time() - start_time
-                print(f"Response time for {service.id}: {elapsed:.2f} seconds")
+                logger.info(f"Response time for {service.id}: {elapsed:.2f} seconds")
 
                 # If we get a normal OK status from the endpoint
                 if response.status == 200:
@@ -85,10 +86,10 @@ async def perform_health_check(service: Service, manager: HealthStatusManager,
                     manager.update_status(service.id, Status.DOWN)
         except asyncio.TimeoutError:
             # If a timeout error is thrown, we assume the service is down
-            print(f"Timeout while trying to reach {service.id}")
+            logger.error(f"Timeout while trying to reach {service.id}")
             manager.update_status(service.id, Status.DOWN)
         except ClientError as e:
 
             # If a general exception is thrown we set to FAILED as we cannot confirm it is the client
-            print(f"Failed to perform health check for {service.name} [ID: {service.id}]: {str(e)}")
+            logger.error(f"Failed to perform health check for {service.name} [ID: {service.id}]: {str(e)}")
             manager.update_status(service.id, Status.FAILED)
