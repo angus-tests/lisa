@@ -14,6 +14,8 @@ Logging, information & system analysis
 |-- config/
     |-- services.yaml      # A list of services to monitor
 |-- images/                # Directory of images
+|-- spec/                  # Directory of specification files, including OpenAPI documents etc
+|-- tests/                 # Application tests and dummy servers
 ```
 
 ## Services.yaml
@@ -74,3 +76,19 @@ The status of services can be returned as SVG badges, using the endpoint `"/badg
 ## OpenAPI spec
 
 In `spec/openapi.yaml` is a file which defines how the microservice endpoints should work. This is currently a work in progress and is not yet complete.
+
+##  Dummy Servers
+
+The `tests/dummies` package contains two dummy servers that can be used to test the application. They are both configured with a single health endpoint to run on ports `5001` and `5002`
+
+### Run the dummy servers
+
+#### Service A
+```bash
+.venv/bin/python tests/dummies/service_a.py
+```
+
+#### Service B
+```bash
+.venv/bin/python tests/dummies/service_b.py
+```
