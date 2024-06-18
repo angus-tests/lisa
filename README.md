@@ -10,7 +10,10 @@ Logging, information & system analysis
     |-- config_manager.py  # For loading config from file
     |-- health_checker.py  # For performing health checks
     |-- load_image.py      # Loading badges
-    |-- main.py            # Entry point of the FastAPI application    
+    |-- main.py            # Entry point of the FastAPI application
+|-- config/
+    |-- services.yaml      # A list of services to monitor
+|-- images/                # Directory of images
 ```
 
 ## Services.yaml
