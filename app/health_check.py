@@ -4,8 +4,10 @@ File used for checking health of services
 import requests
 from requests.exceptions import RequestException
 
+from app.config_manager import Status
 
-def check_health(url: str) -> dict:
+
+def check_health(url: str) -> Status:
     """
     Ping a given endpoint to see if it is healthy
     :param url: The health check URL
@@ -15,6 +17,11 @@ def check_health(url: str) -> dict:
     # TODO implement cache
     try:
         response = requests.get(url)
-        return {'status': response.status_code, 'body': response.text}
-    except RequestException as e:
-        return {'status': 'failed', 'reason': str(e)}
+        if response.status_code == 200:
+            return Status.UP
+        elif response.status_code == 503:
+            return Status.MAINTENANCE
+        else:
+            return Status.DOWN
+    except RequestException:
+        return Status.FAILED
