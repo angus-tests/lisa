@@ -50,6 +50,11 @@ The status of services can be returned as SVG badges, using the endpoint `"/badg
         <td><img src="/images/down.svg" alt="DOWN Badge"></td>
     </tr>
     <tr>
+        <td>DODGY</td>
+        <td>The service is taking longer than usual to respond</td>
+        <td><img src="/images/maybe.svg" alt="DODGY Badge"></td>
+    </tr>
+    <tr>
         <td>MAINTENANCE</td>
         <td>The service is under maintenance.</td>
         <td><img src="/images/maintenance.svg" alt="Maintenance Badge"></td>
