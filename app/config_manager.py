@@ -23,7 +23,6 @@ class Service(BaseModel):
     id: str
     name: str
     description: str
-    repo_url: str
     health_check_url: str
     version_url: str
 
