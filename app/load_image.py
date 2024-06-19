@@ -1,3 +1,7 @@
+"""
+Serve images from file
+"""
+
 import os
 
 from starlette.responses import FileResponse

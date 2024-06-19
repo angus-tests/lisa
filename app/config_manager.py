@@ -1,3 +1,7 @@
+"""
+Responsible for loading and managing configuration from the config directory
+"""
+
 from enum import Enum, auto
 
 import yaml
@@ -21,6 +25,7 @@ class Service(BaseModel):
     description: str
     repo_url: str
     health_check_url: str
+    version_url: str
 
 
 class ConfigManager:
