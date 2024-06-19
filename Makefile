@@ -1,15 +1,21 @@
+.PHONY: install main dummy_a dummy_b
+
+# Target to install all requirements
+install:
+	@echo "Installing requirements..."
+	venv/bin/python -m pip install -r requirements.txt
+
 # Target to run the main FastAPI app
-main:
+main: install
 	@echo "Starting FastAPI main app..."
-	.venv/bin/python -m uvicorn app.main:app --reload
+	venv/bin/python -m uvicorn app.main:app --reload
 
 # Target to run the first dummy server
-dummy_a:
+dummy_a: install
 	@echo "Starting Service A..."
-	.venv/bin/python tests/dummies/service_a.py
+	venv/bin/python tests/dummies/service_a.py
 
 # Target to run the second dummy server
-dummy_b:
+dummy_b: install
 	@echo "Starting Service B..."
-	.venv/bin/python tests/dummies/service_b.py
-
+	venv/bin/python tests/dummies/service_b.py
