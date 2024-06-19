@@ -2,7 +2,7 @@ import asyncio
 
 from fastapi import FastAPI, Depends
 
-from app.config_manager import ConfigManager, Service
+from app.config_manager import ConfigManager
 from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -36,8 +36,20 @@ def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(ge
     """
     Generate an SVG badge which indicates the status
     of this service
+    :param service_id: The ID of the service to get the badge of
+    :param manager: An instance of a health status manager to fetch status' from
     """
     return load_image(manager.get_status(service_id))
+
+
+@app.get("/version/{service_id}")
+def get_service_badge(service_id: str):
+    """
+    Get the current version of a service
+    :param service_id: The ID of the service to get the badge of
+    """
+    return load_image(manager.get_status(service_id))
+
 
 
 @app.get("/")

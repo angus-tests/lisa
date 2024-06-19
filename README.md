@@ -5,13 +5,8 @@ Logging, information & system analysis
 ## App structure
 ```
 /LISA
-|-- app/
-    |-- __init__.py
-    |-- config_manager.py  # For loading config from file
-    |-- health_checker.py  # For performing health checks
-    |-- load_image.py      # Loading badges
-    |-- main.py            # Entry point of the FastAPI application
-|-- config/
+|-- app/                   # Core application code
+|-- config/                # Application config
     |-- services.yaml      # A list of services to monitor
 |-- images/                # Directory of images
 |-- spec/                  # Directory of specification files, including OpenAPI documents etc
@@ -29,6 +24,7 @@ microservices:
     id: user_service # Unique slug for the service
     description: Handles user data and authentication  # Brief description of the service
     health_check_url: http://user-service/health  # URL to check the health of the service
+    version_url: http://user-service/version  # URL to check the version of the service
 ```
 
 ## Badges
