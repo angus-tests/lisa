@@ -17,8 +17,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HealthStatus'
+              examples:
+                example-1:
+                  value:
+                    status: "healthy"
+                    details: "All systems functional."
         '503':
           description: Service Unavailable
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    status: "unhealthy"
+                    details: "Database connectivity issues."
+  /version:
+    get:
+      summary: Get the application version
+      operationId: getAppVersion
+      tags:
+        - Version
+      responses:
+        '200':
+          description: Application version returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    description: The current version of the application.
+              examples:
+                example-1:
+                  value:
+                    version: "1.0.0"
 components:
   schemas:
     HealthStatus:
