@@ -1,12 +1,12 @@
 services:
-  - name: SDX Transformer
-    id: sdx_transformer
-    description: Transforms survey data
+  - name: Service A
+    id: service_a
+    description: A really cool, trendy service
     health_check_url: http://localhost:5001/health
     version_url: http://localhost:5001/version
 
-  - name: SDX Survey
-    id: sdx_survey
-    description: Another sdx microservice bruh
+  - name: Service B
+    id: service_b
+    description: Another cool hip service
     health_check_url: http://localhost:5002/health
     version_url: http://localhost:5002/version
