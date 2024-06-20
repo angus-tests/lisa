@@ -33,15 +33,27 @@ async def perform_async_request(
     """
     async with ClientSession() as session:
         try:
+
+            # Setup of a timeout with the specified parameter
             timeout = ClientTimeout(total=timeout_threshold)
+
+            # Start a timer to see how long the request takes
             start_time = asyncio.get_event_loop().time()
+
+            # Perform a GET request on the url
             async with session.get(url, timeout=timeout) as response:
                 elapsed = asyncio.get_event_loop().time() - start_time
+
+                # Get the content of the response
                 body = await response.json()
+
+                # Return a AsyncResponse object with the details of the response
                 return AsyncResponse(status_code=response.status, elapsed_time=elapsed, body=body)
+        # The request took too long
         except asyncio.TimeoutError:
             logger.error(f"Timeout while trying to reach {url}")
             return AsyncResponse(error='timeout')
+        # General client error exception
         except ClientError as e:
             logger.error(f"Error during request to {url}: {str(e)}")
             return AsyncResponse(error='client_error')

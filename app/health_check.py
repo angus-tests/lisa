@@ -28,7 +28,7 @@ class HealthStatusManager:
         to avoid 404 for existing services
         """
         for service in services:
-            self._statuses[service.id] = Status.UNKNOWN  # or any default status
+            self._statuses[service.id] = Status.UNKNOWN
 
     def update_status(self, service_id: str, status: Status):
         self._statuses[service_id] = status
