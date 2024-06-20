@@ -75,7 +75,7 @@ In `spec/openapi.yaml` is a file which defines how the microservice endpoints sh
 
 ##  Dummy Servers
 
-The `tests/dummies` package contains two dummy servers that can be used to test the application. They are both configured with a single health endpoint to run on ports `5001` and `5002`
+The `tests/dummies` package contains two dummy servers that can be used to test the application. They are both configured with a version and health endpoint to run on ports `5001` and `5002`
 
 ### Run the dummy servers
 
