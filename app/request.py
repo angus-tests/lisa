@@ -1,8 +1,6 @@
 """
 Functions and classes for making requests
 """
-from typing import Optional
-
 from aiohttp import ClientSession, ClientTimeout, ClientError
 from dataclasses import dataclass
 import asyncio
