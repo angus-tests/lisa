@@ -1,6 +1,9 @@
 import asyncio
+from typing import Annotated
 
 from fastapi import FastAPI, Depends
+from pydantic import Json
+from starlette.responses import FileResponse
 
 from app.config_manager import ConfigManager
 from app.health_check import perform_health_check, HealthStatusManager
@@ -22,7 +25,10 @@ def get_status_manager():
 
 
 @app.get("/health/{service_id}")
-def get_service_health(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
+async def get_service_health(
+        service_id: str,
+        manager: Annotated[HealthStatusManager, Depends(get_status_manager)]
+) -> Json:
     """
     Fetch the health status of a service
     :param service_id: The ID of the service
@@ -32,7 +38,10 @@ def get_service_health(service_id: str, manager: HealthStatusManager = Depends(g
 
 
 @app.get("/badge/{service_id}")
-def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
+async def get_service_badge(
+        service_id: str,
+        manager: Annotated[HealthStatusManager, Depends(get_status_manager)]
+) -> FileResponse:
     """
     Generate an SVG badge which indicates the status
     of this service
@@ -43,13 +52,14 @@ def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(ge
 
 
 @app.get("/version/{service_id}")
-def get_service_badge(service_id: str):
+async def get_service_version(
+        service_id: str,
+) -> Json:
     """
     Get the current version of a service
-    :param service_id: The ID of the service to get the badge of
+    :param service_id: The ID of the service to get the version of
     """
-    return load_image(manager.get_status(service_id))
-
+    pass
 
 
 @app.get("/")
