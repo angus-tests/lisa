@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import Json
 from starlette.responses import FileResponse
 
-from app.auth import authenticate_user, get_current_active_user, oauth2_scheme
+from app.auth import authenticate_user, get_current_active_user
 from app.config_manager import ConfigManager
 from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
