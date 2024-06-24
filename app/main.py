@@ -5,10 +5,12 @@ from fastapi import FastAPI, Depends
 from pydantic import Json
 from starlette.responses import FileResponse
 
-from app.config_manager import ConfigManager
+from app.config_manager import ConfigManager, Service
 from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from app.version_check import perform_version_check
 
 app = FastAPI(title="LISA")
 config_manager = ConfigManager("config/services.yaml")
@@ -59,7 +61,9 @@ async def get_service_version(
     Get the current version of a service
     :param service_id: The ID of the service to get the version of
     """
-    pass
+
+    service: Service = config_manager.get_service_by_id(service_id)
+    return perform_version_check(service)
 
 
 @app.get("/")
