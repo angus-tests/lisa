@@ -7,7 +7,7 @@ import os
 from starlette.responses import FileResponse
 
 from app import PROJECT_DIR
-from app.config_manager import Status
+from app.models import Status
 
 # Get the image directory
 IMAGE_DIR = os.path.join(PROJECT_DIR, 'images')

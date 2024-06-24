@@ -4,7 +4,7 @@ File used for checking version of a service
 import logging
 from typing import Union
 
-from app.config_manager import Service
+from app.models import Service
 from app.request import perform_async_request, AsyncResponse
 
 logger = logging.getLogger(__name__)

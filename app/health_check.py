@@ -5,7 +5,7 @@ import logging
 from typing import Dict
 
 from fastapi import HTTPException
-from app.config_manager import Status, Service
+from app.models import Status, Service
 
 from app.request import perform_async_request, AsyncResponse
 

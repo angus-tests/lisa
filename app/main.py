@@ -1,11 +1,18 @@
 import asyncio
+from datetime import datetime, timezone, timedelta
+from typing import Annotated
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 
+from app.auth import authenticate_user, get_current_active_user, oauth2_scheme
 from app.config_manager import ConfigManager
 from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from app.models import User, Token, fake_users_db
+from app.security import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 
 app = FastAPI(title="LISA")
 config_manager = ConfigManager("config/services.yaml")
@@ -13,6 +20,7 @@ scheduler = AsyncIOScheduler()
 status_manager = HealthStatusManager()
 
 
+# -------------- Dependencies -------------
 def get_status_manager():
     """
     Tiny helper function used to retrieve an instance
@@ -20,19 +28,49 @@ def get_status_manager():
     """
     return status_manager
 
+# -------------- Endpoints -------------
+
+@app.post("/token")
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+) -> Token:
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return Token(access_token=access_token, token_type="bearer")
+
+
+@app.get("/users/me/", response_model=User)
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+):
+    return current_user
+
 
 @app.get("/health/{service_id}")
-def get_service_health(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
+async def get_service_health(service_id: str,
+                       token: Annotated[str, Depends(oauth2_scheme)],
+                       manager: HealthStatusManager = Depends(get_status_manager),
+                       ):
     """
     Fetch the health status of a service
     :param service_id: The ID of the service
+    :param token: Authentication token
     :param manager: An instance of a health status manager to fetch status' from
     """
     return {"service_id": service_id, "status": manager.get_status(service_id).name}
 
 
 @app.get("/badge/{service_id}")
-def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
+async def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
     """
     Generate an SVG badge which indicates the status
     of this service
@@ -43,10 +81,11 @@ def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(ge
 
 
 @app.get("/version/{service_id}")
-def get_service_badge(service_id: str):
+async def get_service_badge(service_id: str, manager: HealthStatusManager = Depends(get_status_manager)):
     """
     Get the current version of a service
     :param service_id: The ID of the service to get the badge of
+    :param manager: An instance of a health status manager to fetch status' from
     """
     return load_image(manager.get_status(service_id))
 
