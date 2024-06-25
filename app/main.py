@@ -3,9 +3,9 @@ from typing import Annotated
 
 from fastapi import FastAPI, Depends
 from pydantic import Json
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, JSONResponse
 
-from app.config_manager import ConfigManager, Service
+from app.config_manager import ConfigManager, Service, Status
 from app.health_check import perform_health_check, HealthStatusManager
 from app.load_image import load_image
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -30,13 +30,14 @@ def get_status_manager():
 async def get_service_health(
         service_id: str,
         manager: Annotated[HealthStatusManager, Depends(get_status_manager)]
-) -> Json:
+):
     """
     Fetch the health status of a service
     :param service_id: The ID of the service
     :param manager: An instance of a health status manager to fetch status' from
     """
-    return {"service_id": service_id, "status": manager.get_status(service_id).name}
+    status: Status = await manager.get_status(service_id)
+    return JSONResponse({"service_id": service_id, "status": status.name})
 
 
 @app.get("/badge/{service_id}")
@@ -50,7 +51,7 @@ async def get_service_badge(
     :param service_id: The ID of the service to get the badge of
     :param manager: An instance of a health status manager to fetch status' from
     """
-    return load_image(manager.get_status(service_id))
+    return await load_image(manager.get_status(service_id))
 
 
 @app.get("/version/{service_id}")
@@ -63,7 +64,8 @@ async def get_service_version(
     """
 
     service: Service = config_manager.get_service_by_id(service_id)
-    return perform_version_check(service)
+    version: str = await perform_version_check(service)
+    return JSONResponse({"version": version})
 
 
 @app.get("/")

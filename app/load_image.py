@@ -23,7 +23,7 @@ status_to_image = {
 }
 
 
-def load_image(status: Status) -> FileResponse:
+async def load_image(status: Status) -> FileResponse:
     """
     Given a service status, load
     an appropriate SVG
